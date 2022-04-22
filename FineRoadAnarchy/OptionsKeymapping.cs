@@ -4,6 +4,7 @@ using ColossalFramework.UI;
 
 using System.Reflection;
 using UnityEngine;
+using UnifiedUI.Helpers;
 
 namespace FineRoadAnarchy
 {
@@ -32,6 +33,24 @@ namespace FineRoadAnarchy
             AddKeymapping("Toggle Editor Grid", toggleGrid);
         }
 
+        public static void RegisterUUIHotkeys() {
+            UUIHelpers.RegisterHotkeys(
+                activationKey: toggleAnarchy,
+                onToggle:() => FineRoadAnarchy.instance.ToggleAnarchy());
+            UUIHelpers.RegisterHotkeys(
+                activationKey: toggleBending,
+                onToggle: () => FineRoadAnarchy.instance.ToggleBending());
+            UUIHelpers.RegisterHotkeys(
+                activationKey: toggleSnapping,
+                onToggle: () => FineRoadAnarchy.instance.ToggleSnapping());
+            UUIHelpers.RegisterHotkeys(
+                activationKey: toggleCollision,
+                onToggle: () => FineRoadAnarchy.instance.ToggleCollision()); 
+            UUIHelpers.RegisterHotkeys(
+                activationKey: toggleGrid,
+                onToggle: () => FineRoadAnarchy.instance.ToggleGrid());
+        }
+
         private void AddKeymapping(string label, SavedInputKey savedInputKey)
         {
             UIPanel uIPanel = component.AttachUIComponent(UITemplateManager.GetAsGameObject(kKeyBindingTemplate)) as UIPanel;
@@ -45,6 +64,7 @@ namespace FineRoadAnarchy
             uILabel.text = label;
             uIButton.text = savedInputKey.ToLocalizedString("KEYNAME");
             uIButton.objectUserData = savedInputKey;
+            uIButton.eventVisibilityChanged += ButtonVisibilityChanged;
         }
 
         private void OnEnable()
@@ -137,6 +157,12 @@ namespace FineRoadAnarchy
                 uITextComponent.text = this.m_EditingBinding.ToLocalizedString("KEYNAME");
                 this.m_EditingBinding = null;
                 this.m_EditingBindingCategory = string.Empty;
+            }
+        }
+
+        private static void ButtonVisibilityChanged(UIComponent component, bool isVisible) {
+            if (isVisible && component.objectUserData is SavedInputKey savedInputKey) {
+                (component as UIButton).text = savedInputKey.ToLocalizedString("KEYNAME");
             }
         }
 
