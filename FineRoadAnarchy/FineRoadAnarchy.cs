@@ -14,6 +14,7 @@ using ColossalFramework.UI;
 using FineRoadAnarchy.Redirection;
 using FineRoadAnarchy.Detours;
 using System.Linq;
+using UnifiedUI.Helpers;
 
 namespace FineRoadAnarchy
 {
@@ -31,7 +32,7 @@ namespace FineRoadAnarchy
         
         public NetTool m_netTool;
 
-        private OptionsPanel m_panel;
+        public OptionsPanel m_panel;
 
         private int m_tries;
 
@@ -85,7 +86,7 @@ namespace FineRoadAnarchy
                     m_panel.m_collision.isChecked = collision;
                 }
 
-                OptionsKeymapping.RegisterUUIHotkeys();
+                RegisterUUIHotkeys();
 
                 DebugUtils.Log("Initialized");
             }
@@ -271,11 +272,54 @@ namespace FineRoadAnarchy
             }
         }
 
+        public void RegisterUUIHotkeys() {
+            UUIHelpers.RegisterHotkeys(
+                activationKey: OptionsKeymapping.toggleAnarchy,
+                onToggle: ToggleAnarchy);
+            UUIHelpers.RegisterHotkeys(
+                activationKey: OptionsKeymapping.toggleCollision,
+                onToggle: ToggleCollision);
+            if (m_panel.m_grid != null) {
+                UUIHelpers.RegisterHotkeys(
+                    activationKey: OptionsKeymapping.toggleGrid,
+                    onToggle: ToggleGrid);
+            }
+
+            Dictionary<SavedInputKey, Func<bool>> intoolKeys = new Dictionary<SavedInputKey, Func<bool>>();
+            intoolKeys[OptionsKeymapping.toggleBending] = InNetTool;
+            intoolKeys[OptionsKeymapping.toggleSnapping] = InNetTool;
+            UUIHelpers.RegisterHotkeys(onToggle: null, activeKeys: intoolKeys);
+        }
+
+        public void OnGUI() {
+            try {
+                if (!UIView.HasModalInput() && !UIView.HasInputFocus() && InNetTool()) {
+                    Event e = Event.current;
+
+                    // Checking key presses
+                    if (OptionsKeymapping.toggleBending.IsPressed(e)) {
+                        ToggleBending();
+                    } else if (OptionsKeymapping.toggleSnapping.IsPressed(e)) {
+                        ToggleSnapping();
+                    }
+                }
+            } catch (Exception e) {
+                DebugUtils.Log("OnGUI failed");
+                DebugUtils.LogException(e);
+            }
+        }
+
+        public static bool InNetTool() => ToolsModifierControl.toolController.CurrentTool is NetTool;
+
         public void ToggleAnarchy() => m_panel.m_anarchy.isChecked = !m_panel.m_anarchy.isChecked;
         public void ToggleBending() => m_panel.m_bending.isChecked = !m_panel.m_bending.isChecked;
         public void ToggleSnapping() => m_panel.m_snapping.isChecked = !m_panel.m_snapping.isChecked;
         public void ToggleCollision() => m_panel.m_collision.isChecked = !m_panel.m_collision.isChecked;
-        public void ToggleGrid() => m_panel.m_grid.isChecked = !m_panel.m_grid.isChecked;
+        public void ToggleGrid() {
+            if (m_panel.m_grid != null) {
+                m_panel.m_grid.isChecked = !m_panel.m_grid.isChecked;
+            }
+        }
 
         private void LoadChirperAtlas()
         {

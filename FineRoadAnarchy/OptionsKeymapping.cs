@@ -5,6 +5,8 @@ using ColossalFramework.UI;
 using System.Reflection;
 using UnityEngine;
 using UnifiedUI.Helpers;
+using System.Collections.Generic;
+using System;
 
 namespace FineRoadAnarchy
 {
@@ -31,24 +33,6 @@ namespace FineRoadAnarchy
             AddKeymapping("Toggle Snapping", toggleSnapping);
             AddKeymapping("Toggle Collision", toggleCollision);
             AddKeymapping("Toggle Editor Grid", toggleGrid);
-        }
-
-        public static void RegisterUUIHotkeys() {
-            UUIHelpers.RegisterHotkeys(
-                activationKey: toggleAnarchy,
-                onToggle:() => FineRoadAnarchy.instance.ToggleAnarchy());
-            UUIHelpers.RegisterHotkeys(
-                activationKey: toggleBending,
-                onToggle: () => FineRoadAnarchy.instance.ToggleBending());
-            UUIHelpers.RegisterHotkeys(
-                activationKey: toggleSnapping,
-                onToggle: () => FineRoadAnarchy.instance.ToggleSnapping());
-            UUIHelpers.RegisterHotkeys(
-                activationKey: toggleCollision,
-                onToggle: () => FineRoadAnarchy.instance.ToggleCollision()); 
-            UUIHelpers.RegisterHotkeys(
-                activationKey: toggleGrid,
-                onToggle: () => FineRoadAnarchy.instance.ToggleGrid());
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)
