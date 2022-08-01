@@ -85,6 +85,8 @@ namespace FineRoadAnarchy
                     m_panel.m_collision.isChecked = collision;
                 }
 
+                OptionsKeymapping.RegisterUUIHotkeys();
+
                 DebugUtils.Log("Initialized");
             }
             catch(Exception e)
@@ -269,44 +271,11 @@ namespace FineRoadAnarchy
             }
         }
 
-        public void OnGUI()
-        {
-            try
-            {
-                if (!UIView.HasModalInput() && !UIView.HasInputFocus())
-                {
-                    Event e = Event.current;
-
-                    // Checking key presses
-                    if (OptionsKeymapping.toggleAnarchy.IsPressed(e))
-                    {
-                        m_panel.m_anarchy.isChecked = !m_panel.m_anarchy.isChecked;
-                    }
-                    else if (OptionsKeymapping.toggleBending.IsPressed(e))
-                    {
-                        m_panel.m_bending.isChecked = !m_panel.m_bending.isChecked;
-                    }
-                    else if (OptionsKeymapping.toggleSnapping.IsPressed(e))
-                    {
-                        m_panel.m_snapping.isChecked = !m_panel.m_snapping.isChecked;
-                    }
-                    else if (OptionsKeymapping.toggleCollision.IsPressed(e))
-                    {
-                        m_panel.m_collision.isChecked = !m_panel.m_collision.isChecked;
-                    }
-                    else if (m_panel.m_grid != null && OptionsKeymapping.toggleGrid.IsPressed(e))
-                    {
-                        m_panel.m_grid.isChecked = !m_panel.m_grid.isChecked;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                DebugUtils.Log("OnGUI failed");
-                DebugUtils.LogException(e);
-            }
-        }
-
+        public void ToggleAnarchy() => m_panel.m_anarchy.isChecked = !m_panel.m_anarchy.isChecked;
+        public void ToggleBending() => m_panel.m_bending.isChecked = !m_panel.m_bending.isChecked;
+        public void ToggleSnapping() => m_panel.m_snapping.isChecked = !m_panel.m_snapping.isChecked;
+        public void ToggleCollision() => m_panel.m_collision.isChecked = !m_panel.m_collision.isChecked;
+        public void ToggleGrid() => m_panel.m_grid.isChecked = !m_panel.m_grid.isChecked;
 
         private void LoadChirperAtlas()
         {

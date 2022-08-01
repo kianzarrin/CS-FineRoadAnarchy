@@ -33,6 +33,22 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManagedDLLPath>../dependencies</ManagedDLLPath>
+    <SteamPath Condition="! Exists ('$(SteamPath)')">S:/Steam</SteamPath>
+    <SteamPath>~/Library/Application Support/Steam/</SteamPath>
+    <SteamPath Condition="! Exists ('$(SteamPath)')">$(ProgramFiles)/Steam</SteamPath>
+    <SteamPath Condition="! Exists ('$(SteamPath)')">$(Registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)</SteamPath>
+    <CSPath>$(SteamPath)/steamapps/common/Cities_Skylines</CSPath>
+    <ContentPath>$(SteamPath)/steamapps/workshop/content/255710/$(ContentID)</ContentPath>
+    <ManagedDLLPath Condition="!  Exists ('$(ManagedDLLPath)')">$(CSPath)/Cities_Data/Managed</ManagedDLLPath>
+    <AssemblySearchPaths>
+      $(AssemblySearchPaths);
+      $(ManagedDLLPath);
+      $(CitiesSkylinesBinaries);
+      ../libs
+    </AssemblySearchPaths>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>S:\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -45,6 +61,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnifiedUILib, Version=2.2.8.16680, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\UnifiedUILib.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>S:\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -234,12 +254,12 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y "$(TargetPath)" "$(ProjectDir)\_requiredDLLs\"
-rem xcopy /Y "$(TargetDir)0Harmony.dll" "$(ProjectDir)\_requiredDLLs\"
-xcopy /Y "$(ProjectDir)\_requiredDLLs\*" "S:\Steam\steamapps\workshop\content\255710\1844440354\"
-xcopy /Y "$(ProjectDir)\_requiredDLLs\*" "C:\Users\Leandro\AppData\Local\Colossal Order\Cities_Skylines\Addons\Mods\FRA\"</PostBuildEvent>
+xcopy /Y "$(TargetDir)UnifiedUILib.dll" "$(ProjectDir)\_requiredDLLs\"
+xcopy /Y "$(ProjectDir)\_requiredDLLs\*" "$(SteamPath)\steamapps\workshop\content\255710\1844440354\"
+xcopy /Y "$(ProjectDir)\_requiredDLLs\*" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\FRA\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent> del /q "S:\Steam\steamapps\workshop\content\255710\1844440354\"
+    <PreBuildEvent> del /q "$(SteamPath)\steamapps\workshop\content\255710\1844440354\"
 del /q "$(ProjectDir)\_requiredDLLs"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
