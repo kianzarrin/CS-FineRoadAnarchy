@@ -32,7 +32,7 @@ namespace FineRoadAnarchy
         
         public NetTool m_netTool;
 
-        public OptionsPanel m_panel;
+        private OptionsPanel m_panel;
 
         private int m_tries;
 
