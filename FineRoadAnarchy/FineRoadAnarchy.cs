@@ -403,30 +403,4 @@ namespace FineRoadAnarchy
             chirperAtlasAnarchy = ResourceLoader.CreateTextureAtlas("ChirperAtlasAnarchy", spriteNames, "FineRoadAnarchy.ChirperAtlas.");
         }
     }
-
-    public class FineRoadAnarchyLoader : LoadingExtensionBase
-    {
-        public override void OnLevelLoaded(LoadMode mode)
-        {
-            if (FineRoadAnarchy.instance == null)
-            {
-                // Creating the instance
-                FineRoadAnarchy.instance = new GameObject("FineRoadAnarchy").AddComponent<FineRoadAnarchy>();
-            }
-            else
-            {
-                FineRoadAnarchy.instance.Start();
-            }
-
-            if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset)
-            {
-                GameAreaManager.instance.m_maxAreaCount = GameAreaManager.AREAGRID_RESOLUTION * GameAreaManager.AREAGRID_RESOLUTION;
-                for (int i = 0; i < GameAreaManager.instance.m_maxAreaCount; i++)
-                {
-                    GameAreaManager.instance.m_areaGrid[i] = i + 1;
-                }
-                GameAreaManager.instance.m_areaCount = GameAreaManager.instance.m_maxAreaCount;
-            }
-        }
-    }
 }

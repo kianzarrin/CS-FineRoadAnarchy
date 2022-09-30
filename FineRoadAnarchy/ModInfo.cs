@@ -3,11 +3,12 @@ using ColossalFramework.UI;
 using ICities;
 using System;
 using System.Reflection;
+using UnityEngine;
 
 [assembly: AssemblyVersion("2.0.2.1")]
 namespace FineRoadAnarchy
 {
-    public class ModInfo : IUserMod
+    public class ModInfo :  LoadingExtensionBase, IUserMod
     {
         public ModInfo()
         {
@@ -26,6 +27,31 @@ namespace FineRoadAnarchy
         public string Name => "Klyte's Fine Road Anarchy " + Version;
 
         public string Description => "This mod adds additional options when building road";
+
+        public void OnEnabled() {
+            if (LoadingManager.instance.m_loadingComplete) {
+                OnLevelLoaded((LoadMode)SimulationManager.instance.m_metaData.m_updateMode);
+            }
+        }
+
+        public void OnDisabled() => GameObject.Destroy(FineRoadAnarchy.instance);
+
+        public override void OnLevelLoaded(LoadMode mode) {
+            if (FineRoadAnarchy.instance == null) {
+                // Creating the instance
+                FineRoadAnarchy.instance = new GameObject("FineRoadAnarchy").AddComponent<FineRoadAnarchy>();
+            } else {
+                FineRoadAnarchy.instance.Start();
+            }
+
+            if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset) {
+                GameAreaManager.instance.m_maxAreaCount = GameAreaManager.AREAGRID_RESOLUTION * GameAreaManager.AREAGRID_RESOLUTION;
+                for (int i = 0; i < GameAreaManager.instance.m_maxAreaCount; i++) {
+                    GameAreaManager.instance.m_areaGrid[i] = i + 1;
+                }
+                GameAreaManager.instance.m_areaCount = GameAreaManager.instance.m_maxAreaCount;
+            }
+        }
 
         public void OnSettingsUI(UIHelperBase helper)
         {
